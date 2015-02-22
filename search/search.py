@@ -101,11 +101,10 @@ def depthFirstSearch(problem):
         node = fringe.pop()
         print('node: {}'.format(node))
         if problem.isGoalState(node[0]):
-            print directions
-            return directions[1:]
+            result = []
+            return result
         if node[0] not in closed:
             closed.append(node[0])
-            directions.append(node[1])
             for n in problem.getSuccessors(node[0]):
                 fringe.push(n)
 
