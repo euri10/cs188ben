@@ -88,25 +88,31 @@ def depthFirstSearch(problem):
     """
     "*** YOUR CODE HERE ***"
 
-    from util import Stack
+# add start node to fringe
+#
+# while fringe is not empty:
+# 	remove current node from fringe, according to strategy
+# 	if current node passes goal test:
+# 		return current node
+# 	else:
+# 		if current node's state hasn't been expanded yet:
+# 			add current node's successors to fringe
+# return failure
+    fringe = util.Stack()
     closed = []
-    directions = []
-    fringe = Stack()
-    fringe.push((problem.getStartState(),'',0))
-    loop = True
-    while loop:
-        if fringe.isEmpty():
-            loop = False
-            return 'Failure'
+    fringe.push((problem.getStartState(),[]))
+    while not fringe.isEmpty():
         node = fringe.pop()
-        print('node: {}'.format(node))
         if problem.isGoalState(node[0]):
-            result = []
-            return result
+            print [f[1] for f in fringe.list]
+            return [f[1] for f in fringe.list]
         if node[0] not in closed:
             closed.append(node[0])
-            for n in problem.getSuccessors(node[0]):
-                fringe.push(n)
+            for loc,dir,cost in problem.getSuccessors(node[0]):
+                fringe.push((loc, dir))
+    return 'fail'
+
+
 
 
 
