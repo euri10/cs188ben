@@ -111,6 +111,7 @@ def breadthFirstSearch(problem):
     closed = []
     fringe = util.Queue()
     fringe.push((problem.getStartState(), []))
+    print problem.getStartState()
     while not fringe.isEmpty():
         node = fringe.pop()
         if problem.isGoalState(node[0]):
@@ -118,6 +119,7 @@ def breadthFirstSearch(problem):
         if node[0] not in closed:
             closed.append(node[0])
             for loc, direction, cost in problem.getSuccessors(node[0]):
+                print loc
                 newpath = node[1] + [direction]
                 fringe.push((loc, newpath))
     return []
