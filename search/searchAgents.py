@@ -338,8 +338,8 @@ class CornersProblem(search.SearchProblem):
             "*** YOUR CODE HERE ***"
             x, y = state[0]
             o_corners = list(state[1])
-            print 'original state:', x,y
-            print 'original corner:', o_corners
+            # print 'original state:', x,y
+            # print 'original corner:', o_corners
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]
@@ -347,12 +347,12 @@ class CornersProblem(search.SearchProblem):
                 nextState = (nextx, nexty)
                 for index, corner in enumerate(self.corners):
                     if corner == nextState:
-                        print 'hit corner', corner
+                        # print 'hit corner', corner
                         o_corners[index] = True
-                        print 'adding' , o_corners
+                        # print 'adding' , o_corners
                 cost = 1
                 updatedCorner = list(o_corners)
-                print 'original corner:', o_corners
+                # print 'original corner:', o_corners
                 successors.append(((nextState, updatedCorner), action, cost))
         self._expanded += 1  # DO NOT CHANGE
         return successors
