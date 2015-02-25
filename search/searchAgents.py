@@ -34,11 +34,12 @@ description for details.
 Good luck and happy searching!
 """
 
+import time
+
 from game import Directions
 from game import Agent
 from game import Actions
 import util
-import time
 import search
 
 
@@ -389,16 +390,19 @@ def cornersHeuristic(state, problem):
 
     "*** YOUR CODE HERE ***"
     import math
+
     distances = []
     for c in enumerate(corners):
         if not state[1][c[0]]:
-            dist = math.sqrt((state[0][0]-c[1][0])*(state[0][0]-c[1][0])+(state[0][1]-c[1][1])*(state[0][1]-c[1][1]))
-            distances.append(util.manhattanDistance(state[0],c[1]))
+            dist = math.sqrt(
+                (state[0][0] - c[1][0]) * (state[0][0] - c[1][0]) + (state[0][1] - c[1][1]) * (state[0][1] - c[1][1]))
+            distances.append(util.manhattanDistance(state[0], c[1]))
             # distances.append(dist)
     if len(distances):
         return max(distances)  # Default to trivial solution
     else:
         return 0
+
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -499,13 +503,39 @@ def foodHeuristic(state, problem):
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
     distances = []
+    p=1.00001
+    # WORKING BELOW
     for food in foodGrid.asList():
-        distances.append(util.manhattanDistance(position,food))
-        # distances.append(dist)
+        distances.append(util.manhattanDistance(position, food))
+    # distances.append(dist)
     if len(distances):
-        return max(distances)  # Default to trivial solution
+        m = float(max(distances))
+        return m/p # Default to trivial solution
     else:
         return 0
+    # ATTEMPT USING CLUSTERS, SHITTY
+    # from sklearn.cluster import KMeans
+    # import numpy as np
+    # from collections import defaultdict
+    # if len(foodGrid.asList())>=3:
+    #     n_clusters = 3
+    #     clf = KMeans(n_clusters=n_clusters, max_iter=50)
+    #     clf.fit(foodGrid.asList())
+    #     pred = clf.predict(foodGrid.asList())
+    #     # print pred
+    #     # print foodGrid.asList()
+    #     # pred = [2 2 2 0 0 0 0 0 0 1 1 1 1]
+    #     # print pred, type(pred)
+    #     return min(np.bincount(pred))
+    # else:
+    #     for food in foodGrid.asList():
+    #         distances.append(util.manhattanDistance(position,food))
+    #     # distances.append(dist)
+    #     if len(distances):
+    #         return max(distances)  # Default to trivial solution
+    #     else:
+    #         return 0
+
 
 
 class ClosestDotSearchAgent(SearchAgent):
@@ -576,7 +606,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x, y = state
 
         "*** YOUR CODE HERE ***"
-        return any((x,y) == f for f in self.food.asList())
+        return any((x, y) == f for f in self.food.asList())
 
 
 def mazeDistance(point1, point2, gameState):
