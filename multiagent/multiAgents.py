@@ -18,6 +18,7 @@ import random, util
 
 from game import Agent
 
+
 class ReflexAgent(Agent):
     """
       A reflex agent chooses an action at each choice point by examining
@@ -43,9 +44,10 @@ class ReflexAgent(Agent):
 
         # Choose one of the best actions
         scores = [self.evaluationFunction(gameState, action) for action in legalMoves]
+        print'8888888888888'
         bestScore = max(scores)
         bestIndices = [index for index in range(len(scores)) if scores[index] == bestScore]
-        chosenIndex = random.choice(bestIndices) # Pick randomly among the best
+        chosenIndex = random.choice(bestIndices)  # Pick randomly among the best
 
         "Add more of your code here if you want to"
 
@@ -74,7 +76,35 @@ class ReflexAgent(Agent):
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
         "*** YOUR CODE HERE ***"
-        return successorGameState.getScore()
+        originalscore = currentGameState.getScore()
+        distscore = 0
+        getFscore = 0
+        ghostScore = 0
+        stopScore = 0
+        if successorGameState.getNumFood() < currentGameState.getNumFood():
+            getFscore = 100
+        else:
+            getFscore = 0
+        fdist = [util.manhattanDistance(newPos, f) for f in newFood.asList()]
+        if len(fdist) > 0:
+            # print fdist
+            distscore = 1.0 / min(fdist)
+
+        gdist = [util.manhattanDistance(newPos, g.getPosition()) for g in newGhostStates]
+        if len(gdist)> 0:
+            print gdist
+            if max(gdist) == 0.0:
+                ghostScore = -100
+            else:
+                ghostScore = -1.0/max(gdist)
+
+        if action == 'Stop':
+            stopScore = -10
+
+        score = originalscore + distscore + getFscore + ghostScore + stopScore
+        print('{}|{}, orig: {}, dist: {}, getF: {}, ghost: {}, stop: {}'.format(action, score, originalscore, distscore, getFscore, ghostScore, stopScore))
+        return score
+
 
 def scoreEvaluationFunction(currentGameState):
     """
@@ -85,6 +115,7 @@ def scoreEvaluationFunction(currentGameState):
       (not reflex agents).
     """
     return currentGameState.getScore()
+
 
 class MultiAgentSearchAgent(Agent):
     """
@@ -101,10 +132,11 @@ class MultiAgentSearchAgent(Agent):
       is another abstract class.
     """
 
-    def __init__(self, evalFn = 'scoreEvaluationFunction', depth = '2'):
-        self.index = 0 # Pacman is always agent index 0
+    def __init__(self, evalFn='scoreEvaluationFunction', depth='2'):
+        self.index = 0  # Pacman is always agent index 0
         self.evaluationFunction = util.lookup(evalFn, globals())
         self.depth = int(depth)
+
 
 class MinimaxAgent(MultiAgentSearchAgent):
     """
@@ -137,6 +169,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
         "*** YOUR CODE HERE ***"
         util.raiseNotDefined()
 
+
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
       Your minimax agent with alpha-beta pruning (question 3)
@@ -148,6 +181,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         """
         "*** YOUR CODE HERE ***"
         util.raiseNotDefined()
+
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
@@ -163,6 +197,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         """
         "*** YOUR CODE HERE ***"
         util.raiseNotDefined()
+
 
 def betterEvaluationFunction(currentGameState):
     """
