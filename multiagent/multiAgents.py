@@ -44,7 +44,6 @@ class ReflexAgent(Agent):
 
         # Choose one of the best actions
         scores = [self.evaluationFunction(gameState, action) for action in legalMoves]
-        print'8888888888888'
         bestScore = max(scores)
         bestIndices = [index for index in range(len(scores)) if scores[index] == bestScore]
         chosenIndex = random.choice(bestIndices)  # Pick randomly among the best
@@ -92,7 +91,7 @@ class ReflexAgent(Agent):
 
         gdist = [util.manhattanDistance(newPos, g.getPosition()) for g in newGhostStates]
         if len(gdist)> 0:
-            print gdist
+            # print gdist
             if max(gdist) == 0.0:
                 ghostScore = -100
             else:
@@ -102,7 +101,7 @@ class ReflexAgent(Agent):
             stopScore = -10
 
         score = originalscore + distscore + getFscore + ghostScore + stopScore
-        print('{}|{}, orig: {}, dist: {}, getF: {}, ghost: {}, stop: {}'.format(action, score, originalscore, distscore, getFscore, ghostScore, stopScore))
+        # print('{}|{}, orig: {}, dist: {}, getF: {}, ghost: {}, stop: {}'.format(action, score, originalscore, distscore, getFscore, ghostScore, stopScore))
         return score
 
 
