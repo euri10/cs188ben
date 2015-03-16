@@ -166,8 +166,9 @@ class MinimaxAgent(MultiAgentSearchAgent):
             Returns whether or not the game state is a losing state
         """
         "*** YOUR CODE HERE ***"
+
         def tourMax(gameState, depth):
-            depth-=1
+            depth -= 1
             if depth == 0 or gameState.isWin() or gameState.isLose():
                 return self.evaluationFunction(gameState)
             u = float('-inf')
@@ -183,10 +184,10 @@ class MinimaxAgent(MultiAgentSearchAgent):
                 if agent == ghosts:
                     u = min(u, tourMax(gameState.generateSuccessor(agent, ac), depth))
                 else:
-                    u = min(u, tourMin(gameState.generateSuccessor(agent, ac), depth, agent+1))
+                    u = min(u, tourMin(gameState.generateSuccessor(agent, ac), depth, agent + 1))
             return u
 
-        ghosts = gameState.getNumAgents()-1
+        ghosts = gameState.getNumAgents() - 1
         action = Directions.STOP
         score = float('-inf')
         for ac in gameState.getLegalActions():
@@ -195,10 +196,6 @@ class MinimaxAgent(MultiAgentSearchAgent):
             if score > prevscore:
                 action = ac
         return action
-
-
-
-
 
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
@@ -211,36 +208,34 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
           Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
-        def tourMax(gameState, alpha, beta, depth, numGhosts):
+
+        def tourMax(gameState, alpha, beta, depth):
+            depth -= 1
             if depth == 0 or gameState.isWin() or gameState.isLose():
                 return self.evaluationFunction(gameState)
             u = float('-inf')
             for ac in gameState.getLegalActions(0):
-                u = max(u, tourMin(gameState.generateSuccessor(0, ac), alpha, beta, depth, 1, numGhosts))
+                u = max(u, tourMin(gameState.generateSuccessor(0, ac), alpha, beta, depth, 1))
                 if u > beta:
                     return u
-                alpha=max(u,alpha)
+                alpha = max(alpha, u)
             return u
 
-        def tourMin(gameState, alpha, beta, depth, agent, numGhosts):
+        def tourMin(gameState, alpha, beta, depth, agent):
             if depth == 0 or gameState.isWin() or gameState.isLose():
                 return self.evaluationFunction(gameState)
             u = float('inf')
-            if agent == numGhosts:
-                for ac in gameState.getLegalActions(agent):
-                    u = min(u, tourMax(gameState.generateSuccessor(agent, ac), alpha, beta, depth-1, numGhosts))
-                    if u< alpha:
-                        return u
-                    beta = min(u, beta)
-            else:
-                for ac in gameState.getLegalActions(agent):
-                    u = min(u, tourMin(gameState.generateSuccessor(agent, ac), alpha, beta, depth, agent+1, numGhosts))
-                    if u< alpha:
-                        return u
-                    beta = min(u, beta)
+            for ac in gameState.getLegalActions(agent):
+                if agent == ghosts:
+                    u = min(u, tourMax(gameState.generateSuccessor(agent, ac), alpha, beta, depth))
+                else:
+                    u = min(u, tourMin(gameState.generateSuccessor(agent, ac), alpha, beta, depth, agent + 1))
+                if u < alpha:
+                    return u
+                beta = min(beta, u)
             return u
 
-        ghosts = gameState.getNumAgents()-1
+        ghosts = gameState.getNumAgents() - 1
         action = Directions.STOP
         score = float('-inf')
         alpha = float('-inf')
@@ -248,7 +243,10 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         for ac in gameState.getLegalActions():
             nextS = gameState.generateSuccessor(0, ac)
             prevscore = score
-            score = max(score, tourMin(nextS, alpha, beta, self.depth, 1, ghosts))
+            score = max(score, tourMin(nextS, alpha, beta, self.depth, 1))
+            if score > beta:
+                return score
+            alpha = max(alpha, score)
             if score > prevscore:
                 action = ac
         return action
