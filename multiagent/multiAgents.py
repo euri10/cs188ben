@@ -171,7 +171,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
                 return self.evaluationFunction(gameState)
             u = float('-inf')
             for ac in gameState.getLegalActions(0):
-                u = max(u, tourMin(gameState.generateSuccessor(0, ac), depth-1, 1, numGhosts))
+                u = max(u, tourMin(gameState.generateSuccessor(0, ac), depth, 1, numGhosts))
             return u
 
         def tourMin(gameState, depth, agent, numGhosts):
@@ -186,17 +186,16 @@ class MinimaxAgent(MultiAgentSearchAgent):
                     u = min(u, tourMin(gameState.generateSuccessor(agent, ac), depth, agent+1, numGhosts))
             return u
 
-        print self.depth
         ghosts = gameState.getNumAgents()-1
-        bestaction = Directions.STOP
+        action = Directions.STOP
         score = float('-inf')
-        for action in gameState.getLegalActions():
-            nextState = gameState.generateSuccessor(0, action)
+        for ac in gameState.getLegalActions():
+            nextS = gameState.generateSuccessor(0, ac)
             prevscore = score
-            score = max(score, tourMin(nextState, self.depth, 1, ghosts))
+            score = max(score, tourMin(nextS, self.depth, 1, ghosts))
             if score > prevscore:
-                bestaction = action
-        return bestaction
+                action = ac
+        return action
 
 
 
