@@ -90,12 +90,12 @@ class ReflexAgent(Agent):
             distscore = 1.0 / min(fdist)
 
         gdist = [util.manhattanDistance(newPos, g.getPosition()) for g in newGhostStates]
-        if len(gdist)> 0:
+        if len(gdist) > 0:
             # print gdist
             if max(gdist) == 0.0:
                 ghostScore = -100
             else:
-                ghostScore = -1.0/max(gdist)
+                ghostScore = -1.0 / max(gdist)
 
         if action == 'Stop':
             stopScore = -10
@@ -166,7 +166,41 @@ class MinimaxAgent(MultiAgentSearchAgent):
             Returns whether or not the game state is a losing state
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        def tourMax(gameState, depth, numGhosts):
+            if depth == 0 or gameState.isWin() or gameState.isLose():
+                return self.evaluationFunction(gameState)
+            u = float('-inf')
+            for ac in gameState.getLegalActions(0):
+                u = max(u, tourMin(gameState.generateSuccessor(0, ac), depth-1, 1, numGhosts))
+            return u
+
+        def tourMin(gameState, depth, agent, numGhosts):
+            if depth == 0 or gameState.isWin() or gameState.isLose():
+                return self.evaluationFunction(gameState)
+            u = float('inf')
+            if agent == numGhosts:
+                for ac in gameState.getLegalActions(agent):
+                    u = min(u, tourMax(gameState.generateSuccessor(agent, ac), depth-1, numGhosts))
+            else:
+                for ac in gameState.getLegalActions(agent):
+                    u = min(u, tourMin(gameState.generateSuccessor(agent, ac), depth, agent+1, numGhosts))
+            return u
+
+        print self.depth
+        ghosts = gameState.getNumAgents()-1
+        bestaction = Directions.STOP
+        score = float('-inf')
+        for action in gameState.getLegalActions():
+            nextState = gameState.generateSuccessor(0, action)
+            prevscore = score
+            score = max(score, tourMin(nextState, self.depth, 1, ghosts))
+            if score > prevscore:
+                bestaction = action
+        return bestaction
+
+
+
+
 
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
