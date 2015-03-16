@@ -212,7 +212,47 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
           Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        def tourMax(gameState, depth, numGhosts, alpha, beta):
+            if depth == 0 or gameState.isWin() or gameState.isLose():
+                return self.evaluationFunction(gameState)
+            u = float('-inf')
+            for ac in gameState.getLegalActions(0):
+                u = max(u, tourMin(gameState.generateSuccessor(0, ac), depth, 1, numGhosts, alpha, beta))
+                if u > beta:
+                    return u
+                alpha = max(alpha, u)
+            return u
+
+        def tourMin(gameState, depth, agent, numGhosts, alpha, beta):
+            if depth == 0 or gameState.isWin() or gameState.isLose():
+                return self.evaluationFunction(gameState)
+            u = float('inf')
+            if agent == numGhosts:
+                for ac in gameState.getLegalActions(agent):
+                    u = min(u, tourMax(gameState.generateSuccessor(agent, ac), depth-1, numGhosts, alpha, beta))
+                    if u < alpha:
+                        return u
+                    beta = min(beta, u)
+            else:
+                for ac in gameState.getLegalActions(agent):
+                    u = min(u, tourMin(gameState.generateSuccessor(agent, ac), depth, agent+1, numGhosts, alpha, beta))
+                    if u < alpha:
+                        return u
+                    beta = min(beta, u)
+            return u
+
+        ghosts = gameState.getNumAgents()-1
+        action = Directions.STOP
+        score = float('-inf')
+        alpha = float('-inf')
+        beta = float('inf')
+        for ac in gameState.getLegalActions():
+            nextS = gameState.generateSuccessor(0, ac)
+            prevscore = score
+            score = max(score, tourMin(nextS, self.depth, 1, ghosts, alpha, beta))
+            if score > prevscore:
+                action = ac
+        return action
 
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
