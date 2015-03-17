@@ -265,6 +265,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
           legal moves.
         """
         "*** YOUR CODE HERE ***"
+
         def tourMax(gameState, depth):
             depth -= 1
             if depth == 0 or gameState.isWin() or gameState.isLose():
@@ -280,9 +281,11 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
             u = 0.0
             for ac in gameState.getLegalActions(agent):
                 if agent == ghosts:
-                    u += (tourMax(gameState.generateSuccessor(agent, ac), depth))/len(gameState.getLegalActions(agent))
+                    u += (tourMax(gameState.generateSuccessor(agent, ac), depth)) / len(
+                        gameState.getLegalActions(agent))
                 else:
-                    u += (expexted(gameState.generateSuccessor(agent, ac), depth, agent + 1))/len(gameState.getLegalActions(agent))
+                    u += (expexted(gameState.generateSuccessor(agent, ac), depth, agent + 1)) / len(
+                        gameState.getLegalActions(agent))
             return u
 
         ghosts = gameState.getNumAgents() - 1
@@ -305,15 +308,27 @@ def betterEvaluationFunction(currentGameState):
     """
     "*** YOUR CODE HERE ***"
     score = currentGameState.getScore()
+
+    # feature 1
     # score better if ghosts reachable once pellet eaten. calculate the number of reachable ghosts
     # ghTimers is the list of (timers on ghost, distance to ghost) for scared ghost
-    ghTimers = [(s.scaredTimer, util.manhattanDistance(currentGameState.getPacmanPosition(), s.getPosition())) for s in currentGameState.getGhostStates() if s.scaredTimer>0]
+    ghTimers = [(s.scaredTimer, util.manhattanDistance(currentGameState.getPacmanPosition(), s.getPosition())) for s in
+                currentGameState.getGhostStates() if s.scaredTimer > 0]
     # print '(timer, distance)', ghTimers
     # ghIsFood is the list of scared ghost whose distance to reach is inferior than their timer, hence they are reachable
     ghIsFood = [g[1] for g in ghTimers if g[0] > g[1]]
     # print 'food', ghIsFood
     if len(ghIsFood) > 0:
-        score += 10.0/min(ghIsFood)
+        score += 10.0 / min(ghIsFood)
+
+    # score should be better for closer food
+    pcmanToFood = [util.manhattanDistance(currentGameState.getPacmanPosition(), f) for f in
+                   currentGameState.getFood().asList()]
+    if len(pcmanToFood) > 0:
+        score += 1.0 / min(pcmanToFood)
+
+    # penaly for stopping
+
     return score
 
 # Abbreviation
