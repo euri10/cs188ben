@@ -325,7 +325,7 @@ def betterEvaluationFunction(currentGameState):
     pcmanToFood = [util.manhattanDistance(currentGameState.getPacmanPosition(), f) for f in
                    currentGameState.getFood().asList()]
     if len(pcmanToFood) > 0:
-        score += 1.0 / min(pcmanToFood)
+        score += 5.0 / min(pcmanToFood)
 
     # penaly for stopping
 
