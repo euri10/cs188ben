@@ -304,7 +304,17 @@ def betterEvaluationFunction(currentGameState):
       DESCRIPTION: <write something here so we know what you did>
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    score = currentGameState.getScore()
+    # score better if ghosts reachable once pellet eaten. calculate the number of reachable ghosts
+    # ghTimers is the list of (timers on ghost, distance to ghost) for scared ghost
+    ghTimers = [(s.scaredTimer, util.manhattanDistance(currentGameState.getPacmanPosition(), s.getPosition())) for s in currentGameState.getGhostStates() if s.scaredTimer>0]
+    # print '(timer, distance)', ghTimers
+    # ghIsFood is the list of scared ghost whose distance to reach is inferior than their timer, hence they are reachable
+    ghIsFood = [g[1] for g in ghTimers if g[0] > g[1]]
+    # print 'food', ghIsFood
+    if len(ghIsFood) > 0:
+        score += 10.0/min(ghIsFood)
+    return score
 
 # Abbreviation
 better = betterEvaluationFunction
