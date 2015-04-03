@@ -73,7 +73,20 @@ class ValueIterationAgent(ValueEstimationAgent):
           terminal state, you should return None.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        print 'mdp', self.mdp
+        # print 'states', self.mdp.getStates()
+        print 'poss actions', self.mdp.getPossibleActions(state)
+        print 'values', self.values
+        for key in self.values.iterkeys():
+            for action in self.mdp.getPossibleActions(state):
+                print 'probas states', self.mdp.getTransitionStatesAndProbs(state, action)
+                for l in self.mdp.getTransitionStatesAndProbs(state,action):
+                    ns, p = l
+                    r = self.mdp.getReward(state, action, ns)
+                    self.values[key] += p*(r+self.discount*self.values[ns])
+        print 'is terminal', self.mdp.isTerminal(state)
+        if self.mdp.isTerminal(state):
+            return None
 
     def getPolicy(self, state):
         return self.computeActionFromValues(state)
