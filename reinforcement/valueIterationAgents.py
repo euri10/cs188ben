@@ -56,6 +56,7 @@ class ValueIterationAgent(ValueEstimationAgent):
                 for action in self.mdp.getPossibleActions(state):
                     ql.append(self.getQValue(state, action))
                 if len(ql):
+                    print 'ql', ql
                     Vs[state] = max(ql)
                 self.values[state] = Vs[state]
 
