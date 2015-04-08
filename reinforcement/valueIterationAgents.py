@@ -50,7 +50,7 @@ class ValueIterationAgent(ValueEstimationAgent):
         "*** YOUR CODE HERE ***"
         for i in range(self.iterations):
             Vs = self.values.copy()
-            print '****************'
+            # print '****************'
             for state in mdp.getStates():
                 ql = []
                 for action in self.mdp.getPossibleActions(state):
@@ -75,7 +75,7 @@ class ValueIterationAgent(ValueEstimationAgent):
         q = 0.0
         for nextState, proba in [(s[0], s[1]) for s in self.mdp.getTransitionStatesAndProbs(state, action)]:
             q += proba * (self.mdp.getReward(state, action, nextState) + self.discount * self.getValue(nextState))
-        print q
+        # print q
         return q
 
     def computeActionFromValues(self, state):
