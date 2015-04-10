@@ -162,7 +162,7 @@ class PacmanQAgent(QLearningAgent):
         informs parent of action for Pacman.  Do not change or remove this
         method.
         """
-        action = QLearningAgent.getAction(self,state)
+        action = QLearningAgent.getAction(self, state)
         self.doAction(state,action)
         return action
 
@@ -189,8 +189,11 @@ class ApproximateQAgent(PacmanQAgent):
           where * is the dotProduct operator
         """
         "*** YOUR CODE HERE ***"
-        q=None
-        print self.featExtractor.getFeatures(state, action)
+        q = 0.0
+        fa = self.featExtractor.getFeatures(state, action)
+        for k,v in fa.iteritems():
+            w = self.weights[k]
+            q+=v*self.weights[k]
         return q
 
     def update(self, state, action, nextState, reward):
@@ -200,7 +203,9 @@ class ApproximateQAgent(PacmanQAgent):
         "*** YOUR CODE HERE ***"
         nw = None
         difference = reward + self.discount * self.getQValue(nextState, action) - self.getQValue(state, action)
-        nw = self.weights+ self.alpha * difference * self.featExtractor.getFeatures(state, action)
+
+        fa = self.featExtractor.getFeatures(state, action)
+        nw = self.weights[state, action] + self.alpha * difference * fa[state, action]
         return nw
 
     def final(self, state):
